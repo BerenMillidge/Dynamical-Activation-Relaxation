@@ -10,28 +10,28 @@ seeds = 1
 datasets = ["mnist","fashion"]
 
 lrs = [0.8,0.5,0.1]
-num_inference_steps = [100,50,20,10]
+num_inference_steps = [500,300,200100,50]
 for dataset in datasets:
     base_call = bcall + " --dataset " + str(dataset)
     condition=dataset+"_inference_lrs"
     for lr in lrs:
         base_call += " --inference_learning_rate " + str(lr)
-        condition += "_"+str(lr)
+        cond = condition + "_"+str(lr)
         for s in range(seeds):
-            lpath = log_path + "/"+str(exp_name) +"_"+condition + "/" + str(s)
-            spath = save_path + "/" + str(exp_name) +"_"+condition + "/" + str(s)
-            final_call = base_call + " --logdir " + str(lpath) + " --savedir " + str(spath) + " --dynamical_weight_update True"
+            lpath = log_path + "/"+str(exp_name) +"_"+cond + "/" + str(s)
+            spath = save_path + "/" + str(exp_name) +"_"+cond + "/" + str(s)
+            final_call = base_call + " --logdir " + str(lpath) + " --savedir " + str(spath) + " --dynamical_weight_update True --n_inference_steps 500"
             print(final_call)
             print(final_call, file=output_file)
 
     condition=dataset+"_inference_steps"
     for inference_steps in num_inference_steps:
         base_call += " --n_inference_steps " + str(inference_steps)
-        condition += "_"+str(inference_steps)
+        cond = condition + "_"+str(inference_steps)
         for s in range(seeds):
-            lpath = log_path + "/"+str(exp_name) +"_"+condition + "/" + str(s)
-            spath = save_path + "/" + str(exp_name) +"_"+condition + "/" + str(s)
-            final_call = base_call + " --logdir " + str(lpath) + " --savedir " + str(spath) + " --dynamical_weight_update True"
+            lpath = log_path + "/"+str(exp_name) +"_"+cond + "/" + str(s)
+            spath = save_path + "/" + str(exp_name) +"_"+cond + "/" + str(s)
+            final_call = base_call + " --logdir " + str(lpath) + " --savedir " + str(spath) + " --dynamical_weight_update True --inference_lr 0.5"
             print(final_call)
             print(final_call, file=output_file)
 
