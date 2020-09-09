@@ -48,6 +48,8 @@ repo_home=/home/${USER}/ActivationRelaxation
 mnist_path=${repo_home}/mnist_data
 svhn_path=${repo_home}/svhn_data
 fashion_path=${repo_home}/fashion_data
+cifar_path=${repo_home}/cifar_data
+cifar100_path=${repo_home}/cifar100_data
 #src_path=${repo_home}/experiments/examples/mnist/data/input
 
 # input data directory path on the scratch disk of the node
@@ -57,6 +59,10 @@ svhn_dest_path=${SCRATCH_DISK}/${USER}/svhn_data
 mkdir -p ${svhn_dest_path}
 fashion_dest_path=${SCRATCH_DISK}/${USER}/fashion_data
 mkdir -p ${fashion_dest_path}
+cifar_dest_path=${SCRATCH_DISK}/${USER}/cifar_data
+mkdir -p ${cifar_dest_path}  # make it if required
+cifar100_dest_path=${SCRATCH_DISK}/${USER}/cifar100_data
+mkdir -p ${cifar100_dest_path}  # make it if required
 
 
 # rsync data across from headnode to compute node
@@ -66,6 +72,11 @@ rsync --archive --update --compress --progress ${svhn_path}/ ${svhn_dest_path}
 echo "Rsynced svhn"
 rsync --archive --update --compress --progress ${fashion_path}/ ${fashion_dest_path}
 echo "Rsynced fashion MNIST"
+rsync --archive --update --compress --progress ${cifar_path}/ ${cifar_dest_path}
+echo "Rsynced cifar"
+rsync --archive --update --compress --progress ${cifar100_path}/ ${cifar100_dest_path}
+echo "Rsynced cifar100"
+rsync --archive --update --compress --progress ${svhn_path}/ ${svhn_dest_path}
 
 echo "Running experiment command"
 experiment_text_file=$1
