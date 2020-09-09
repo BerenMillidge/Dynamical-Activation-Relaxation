@@ -25,12 +25,12 @@ def get_cnn_dataset(dataset, batch_size,normalize=True):
         transform = transforms.Compose([transforms.ToTensor()])
     if dataset == "cifar":
         trainset = torchvision.datasets.CIFAR10(root='./cifar_data', train=True,
-                                                download=True, transform=transform)
+                                                download=False, transform=transform)
         trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size,
                                           shuffle=True)
         train_data = list(iter(trainloader))
         testset = torchvision.datasets.CIFAR10(root='./cifar_data', train=False,
-                                               download=True, transform=transform)
+                                               download=False, transform=transform)
         testloader = torch.utils.data.DataLoader(testset, batch_size=batch_size,
                                           shuffle=True)
         test_data = list(iter(testloader))
