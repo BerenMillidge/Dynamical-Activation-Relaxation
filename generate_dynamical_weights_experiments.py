@@ -16,6 +16,7 @@ for dataset in datasets:
     condition=dataset+"_inference_lrs"
     for lr in lrs:
         base_call += " --inference_learning_rate " + str(lr)
+        condition += "_"+str(lr)
         for s in range(seeds):
             lpath = log_path + "/"+str(exp_name) +"_"+condition + "/" + str(s)
             spath = save_path + "/" + str(exp_name) +"_"+condition + "/" + str(s)
@@ -26,6 +27,7 @@ for dataset in datasets:
     condition=dataset+"_inference_steps"
     for inference_steps in num_inference_steps:
         base_call += " --n_inference_steps " + str(inference_steps)
+        condition += "_"+str(inference_steps)
         for s in range(seeds):
             lpath = log_path + "/"+str(exp_name) +"_"+condition + "/" + str(s)
             spath = save_path + "/" + str(exp_name) +"_"+condition + "/" + str(s)
