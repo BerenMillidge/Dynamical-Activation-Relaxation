@@ -7,6 +7,7 @@ import torchvision.transforms as transforms
 from copy import deepcopy
 import torch.nn as nn
 import torch.nn.functional as F
+import math
 
 class ConvLayer(object):
   def __init__(self,input_size,num_channels,num_filters,batch_size,kernel_size,learning_rate,f,df,inference_lr,padding=0,stride=1,device="cpu",numerical_test=False):
@@ -29,7 +30,7 @@ class ConvLayer(object):
     self.fold = nn.Fold(output_size=(self.input_size,self.input_size),kernel_size=(self.kernel_size,self.kernel_size),padding=self.padding,stride=self.stride).to(self.device)
     self.numerical_test=numerical_test
     self.use_conv_backwards_weights = False
-    self.use_conv_backwards_nonlinearities = False
+    self.use_conv_backwards_nonlinearity = False
     self.update_backwards_weights = True
 
   def init_numerical_test(self):
@@ -53,7 +54,7 @@ class ConvLayer(object):
     return self.f(self.activations)
 
   def update_weights(self,xnext,update_weights=False):
-    if self.use_conv_backwards_nonlinearities:
+    if self.use_conv_backwards_nonlinearity:
         fn_deriv = self.df(self.activations)
         e = xnext * fn_deriv
     else:
@@ -69,7 +70,7 @@ class ConvLayer(object):
     return dW
 
   def backward(self,xnext):
-    if self.use_conv_backwards_nonlinearities:
+    if self.use_conv_backwards_nonlinearity:
         fn_deriv = self.df(self.activations)
         e = xnext * fn_deriv
     else:
@@ -156,7 +157,7 @@ class ProjectionLayer(object):
     self.weights = torch.empty((self.Hid, self.output_size)).normal_(mean=0.0, std=0.05).to(self.device)
     self.numerical_test = numerical_test
     self.use_FC_backwards_weights =False
-    self.use_FC_backwards_nonlinearities = False
+    self.use_FC_backwards_nonlinearity = False
     self.update_backwards_weights = True
 
   def init_backwards_weights(self):
@@ -172,13 +173,13 @@ class ProjectionLayer(object):
 
   def backward(self, xnext):
     if not self.use_FC_backwards_weights:
-        if self.use_FC_backwards_nonlinearities:
+        if self.use_FC_backwards_nonlinearity:
             fn_deriv = self.df(self.activations)
             out = torch.matmul(xnext * fn_deriv, self.weights.T)
         else:
             out = torch.matmul(xnext, self.weights.T)
     else:
-        if self.use_FC_backwards_nonlinearities:
+        if self.use_FC_backwards_nonlinearity:
             fn_deriv = self.df(self.activations)
             out = torch.matmul(xnext * fn_deriv, self.backwards_weights)
         else:
@@ -235,7 +236,7 @@ class FCLayer(object):
     self.weights = torch.empty([self.input_size,self.output_size]).normal_(mean=0.0,std=0.05).to(self.device)
     self.numerical_test= numerical_test
     self.use_FC_backwards_weights =False
-    self.use_FC_backwards_nonlinearities = False
+    self.use_FC_backwards_nonlinearity = False
     self.update_backwards_weights = True
 
   def init_backwards_weights(self):
@@ -251,13 +252,13 @@ class FCLayer(object):
 
   def backward(self,xnext):
     if not self.use_FC_backwards_weights:
-        if self.use_FC_backwards_nonlinearities:
+        if self.use_FC_backwards_nonlinearity:
             self.fn_deriv = self.df(self.activations)
             out = torch.matmul(xnext * self.fn_deriv, self.weights.T)
         else:
             out = torch.matmul(xnext, self.weights.T)
     else:
-        if self.use_FC_backwards_nonlinearities:
+        if self.use_FC_backwards_nonlinearity:
             self.fn_deriv = self.df(self.activations)
             out = torch.matmul(xnext * self.fn_deriv, self.backwards_weights)
         else:
