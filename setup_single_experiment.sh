@@ -44,7 +44,7 @@ conda activate ${CONDA_NAME}
 echo "Moving input data to the compute node's scratch space: $SCRATCH_DISK"
 
 # input data directory path on the DFS
-repo_home=/home/${USER}/ActivationRelaxation
+repo_home=/home/${USER}/Dynamical-Activation-Relaxation
 mnist_path=${repo_home}/mnist_data
 svhn_path=${repo_home}/svhn_data
 fashion_path=${repo_home}/fashion_data
