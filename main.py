@@ -478,14 +478,14 @@ if __name__ == '__main__':
     print("folders created")
     trainset,testset = get_dataset(args.batch_size,args.norm_factor,dataset=args.dataset)
     if args.dataset == "mnist" or args.dataset=="fashion":
-      l1 = FCLayer(784,300,args.batch_size,relu,relu_deriv,args.inference_learning_rate, args.learning_rate,device=DEVICE)
-      l2 = FCLayer(300,300,args.batch_size,relu,relu_deriv,args.inference_learning_rate, args.learning_rate,device=DEVICE)
-      l3 = FCLayer(300,100,args.batch_size,relu,relu_deriv,args.inference_learning_rate, args.learning_rate,device=DEVICE)
+      l1 = FCLayer(784,300,args.batch_size,tanh,tanh_deriv,args.inference_learning_rate, args.learning_rate,device=DEVICE)
+      l2 = FCLayer(300,300,args.batch_size,tanh,tanh_deriv,args.inference_learning_rate, args.learning_rate,device=DEVICE)
+      l3 = FCLayer(300,100,args.batch_size,tanh,tanh_deriv,args.inference_learning_rate, args.learning_rate,device=DEVICE)
       l4 = FCLayer(100,10,args.batch_size,linear,linear_deriv,args.inference_learning_rate, args.learning_rate,device=DEVICE)
     elif args.dataset == "svhn":
-      l1 = FCLayer(3072,1000,args.batch_size,relu,relu_deriv,args.inference_learning_rate, args.learning_rate,device=DEVICE)
-      l2 = FCLayer(1000,1000,args.batch_size,relu,relu_deriv,args.inference_learning_rate, args.learning_rate,device=DEVICE)
-      l3 = FCLayer(1000,300,args.batch_size,relu,relu_deriv,args.inference_learning_rate, args.learning_rate,device=DEVICE)
+      l1 = FCLayer(3072,1000,args.batch_size,tanh,tanh_deri ,args.inference_learning_rate, args.learning_rate,device=DEVICE)
+      l2 = FCLayer(1000,1000,args.batch_size,tanh,tanh_deriv,args.inference_learning_rate, args.learning_rate,device=DEVICE)
+      l3 = FCLayer(1000,300,args.batch_size,tanh,tanh_deriv,args.inference_learning_rate, args.learning_rate,device=DEVICE)
       l4 = FCLayer(300,10,args.batch_size,linear,linear_deriv,args.inference_learning_rate, args.learning_rate,device=DEVICE)
     else:
       raise ValueError("dataset not recognised")
