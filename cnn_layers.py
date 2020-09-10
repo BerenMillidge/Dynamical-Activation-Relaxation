@@ -162,7 +162,7 @@ class ProjectionLayer(object):
 
   def init_backwards_weights(self):
       if self.use_FC_backwards_weights:
-          self.backwards_weights = torch.empty([self.output_size,self.input_size]).normal_(mean=0.0,std=0.05).to(self.device)
+          self.backwards_weights = torch.empty([self.output_size,self.Hid]).normal_(mean=0.0,std=0.05).to(self.device)
 
   def forward(self, x):
     self.x = x.detach().clone()
@@ -191,8 +191,8 @@ class ProjectionLayer(object):
 
   def update_weights(self, xnext,update_weights=False):
     out = self.old_x.reshape((len(self.old_x), -1))
-    if self.use_FC_backwards_nonlinearities:
-        fn_deriv = self.df(self.activations)
+    fn_deriv = self.df(self.activations)
+    if self.use_FC_backwards_nonlinearity:
         dw = torch.matmul(out.T, xnext * fn_deriv)
     else:
         dw = torch.matmul(out.T, xnext)
@@ -268,8 +268,8 @@ class FCLayer(object):
     return self.x
 
   def update_weights(self,xnext,update_weights=False):
-    if self.use_FC_backwards_nonlinearities:
-        self.fn_deriv = self.df(self.activations)
+    self.fn_deriv = self.df(self.activations)
+    if self.use_FC_backwards_nonlinearity:
         dw = torch.matmul(self.old_x.T, xnext * self.fn_deriv)
     else:
         dw = torch.matmul(self.old_x.T, xnext)

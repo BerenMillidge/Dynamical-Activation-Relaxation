@@ -25,12 +25,12 @@ def get_cnn_dataset(dataset, batch_size,normalize=True):
         transform = transforms.Compose([transforms.ToTensor()])
     if dataset == "cifar":
         trainset = torchvision.datasets.CIFAR10(root='./cifar_data', train=True,
-                                                download=False, transform=transform)
+                                                download=True, transform=transform)
         trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size,
                                           shuffle=True)
         train_data = list(iter(trainloader))
         testset = torchvision.datasets.CIFAR10(root='./cifar_data', train=False,
-                                               download=False, transform=transform)
+                                               download=True, transform=transform)
         testloader = torch.utils.data.DataLoader(testset, batch_size=batch_size,
                                           shuffle=True)
         test_data = list(iter(testloader))
@@ -208,10 +208,12 @@ class ARNet(object):
     #print("learn batch update weights: ", update_weights)
     xs = [[] for i in range(len(self.layers)+1)]
     xs[0] = inps
+    print("LABELS: ", labels.shape)
     #forward pass
     for i,l in enumerate(self.layers):
       xs[i+1] = l.forward(xs[i])
     #inference
+    print("xs: ", xs[-1].shape, labels.shape)
     out_error = 2 * (xs[-1] - labels)
     backs = [[] for i in range(len(self.layers)+1)]
     backs[-1] = out_error
@@ -426,7 +428,6 @@ if __name__ == '__main__':
     l6 = FCLayer(84,10,64,args.learning_rate,args.inference_learning_rate,linear,linear_deriv,device=DEVICE)
     layers =[l1,l2,l3,l4,l5,l6]
     net = ARNet(layers,500,0.05,0.001,device=DEVICE)
-    layers =[l1,l2,l3,l4]
     if args.network_type == "ar":
         net = ARNet(layers,args.n_inference_steps,args.inference_learning_rate,args.learning_rate,use_FC_backwards_weights=args.use_FC_backwards_weights,
          update_backwards_weights = args.update_backwards_weights, 
