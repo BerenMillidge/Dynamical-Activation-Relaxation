@@ -428,7 +428,7 @@ if __name__ == '__main__':
     net = ARNet(layers,500,0.05,0.001,device=DEVICE)
     layers =[l1,l2,l3,l4]
     if args.network_type == "ar":
-        net = ARNet(layers,args.n_inference_steps,use_FC_backwards_weights=args.use_FC_backwards_weights,
+        net = ARNet(layers,args.n_inference_steps,args.inference_learning_rate,args.learning_rate,use_FC_backwards_weights=args.use_FC_backwards_weights,
          update_backwards_weights = args.update_backwards_weights, 
          use_FC_backwards_nonlinearity = args.use_FC_backwards_nonlinearity,
          use_conv_backwards_weights = args.use_conv_backwards_weights,
