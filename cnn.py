@@ -136,7 +136,7 @@ def boolcheck(x):
     return str(x).lower() in ["true", "1", "yes"]
 
 class ARNet(object):
-  def __init__(self, layers, n_inference_steps_train, inference_learning_rate, weight_learning_rate,continual_weight_update=False,update_dilation_factor=None,numerical_check=False,device='cpu',use_FC_backwards_weights=False,use_FC_backward_nonlinearity=False,update_backwards_weights = True, use_conv_backwards_weights = False, use_conv_backwards_nonlinearity = False):
+  def __init__(self, layers, n_inference_steps_train, inference_learning_rate, weight_learning_rate,continual_weight_update=False,update_dilation_factor=None,numerical_check=False,device='cpu',use_FC_backwards_weights=False,use_FC_backwards_nonlinearity=False,update_backwards_weights = True, use_conv_backwards_weights = False, use_conv_backwards_nonlinearity = False):
     self.layers= layers
     self.n_inference_steps_train = n_inference_steps_train
     self.inference_learning_rate = inference_learning_rate
@@ -149,7 +149,7 @@ class ARNet(object):
     self.mus = [[] for i in range(self.L+1)]
     self.continual_weight_update = continual_weight_update
     self.numerical_check = numerical_check
-    self.use_FC_backward_nonlinearity = use_FC_backward_nonlinearity
+    self.use_FC_backwards_nonlinearity = use_FC_backwards_nonlinearity
     self.use_FC_backwards_weights = use_FC_backwards_weights
     self.update_backwards_weights = update_backwards_weights
     self.use_conv_backwards_nonlinearity = use_conv_backwards_nonlinearity
@@ -166,7 +166,7 @@ class ARNet(object):
 
     #apply conditions to layers
     for l in self.layers:
-        l.use_FC_backward_nonlinearity = self.use_FC_backward_nonlinearity
+        l.use_FC_backwards_nonlinearity = self.use_FC_backwards_nonlinearity
         l.use_FC_backwards_weights = self.use_FC_backwards_weights
         l.update_backwards_weights = self.update_backwards_weights
         l.use_conv_backwards_nonlinearity = self.use_conv_backwards_nonlinearity
@@ -430,7 +430,7 @@ if __name__ == '__main__':
     if args.network_type == "ar":
         net = ARNet(layers,args.n_inference_steps,use_FC_backwards_weights=args.use_FC_backwards_weights,
          update_backwards_weights = args.update_backwards_weights, 
-         use_FC_backward_nonlinearity = args.use_FC_backward_nonlinearity,
+         use_FC_backwards_nonlinearity = args.use_FC_backwards_nonlinearity,
          use_conv_backwards_weights = args.use_conv_backwards_weights,
          use_conv_backwards_nonlinearity = args.use_conv_backwards_nonlinearity,
          device=DEVICE)
