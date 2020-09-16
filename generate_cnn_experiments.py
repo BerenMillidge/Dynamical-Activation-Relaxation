@@ -11,13 +11,31 @@ datasets = ["cifar","cifar100","svhn"]
 
 for dataset in datasets:
     base_call = bcall + " --dataset " + str(dataset)
+
+    condition=dataset+"_default"
     for s in range(seeds):
-        condition=dataset+"_use_FC_backwards_weights"
         lpath = log_path + "/"+str(exp_name) +"_"+condition + "/" + str(s)
         spath = save_path + "/" + str(exp_name) +"_"+condition + "/" + str(s)
-        final_call = base_call + " --logdir " + str(lpath) + " --savedir " + str(spath) + " --use_FC_backwards_weights True"
+        final_call = base_call + " --logdir " + str(lpath) + " --savedir " + str(spath)
         print(final_call)
         print(final_call, file=output_file)
+
+    condition=dataset+"_use_everything"
+    for s in range(seeds):
+        lpath = log_path + "/"+str(exp_name) +"_"+condition + "/" + str(s)
+        spath = save_path + "/" + str(exp_name) +"_"+condition + "/" + str(s)
+        final_call = base_call + " --logdir " + str(lpath) + " --savedir " + str(spath) + " --use_conv_backwards_nonlinearity True --use_FC_backwards_nonlinearity True --use_FC_backwards_weights True"
+        print(final_call)
+        print(final_call, file=output_file)
+        
+"""
+    condition=dataset+"_use_FC_backwards_weights"
+        for s in range(seeds):
+            lpath = log_path + "/"+str(exp_name) +"_"+condition + "/" + str(s)
+            spath = save_path + "/" + str(exp_name) +"_"+condition + "/" + str(s)
+            final_call = base_call + " --logdir " + str(lpath) + " --savedir " + str(spath) + " --use_FC_backwards_weights True"
+            print(final_call)
+            print(final_call, file=output_file)
 
     condition=dataset+"_use_FC_backwards_nonlinearity"
     for s in range(seeds):
@@ -57,16 +75,9 @@ for dataset in datasets:
         spath = save_path + "/" + str(exp_name) +"_"+condition + "/" + str(s)
         final_call = base_call + " --logdir " + str(lpath) + " --savedir " + str(spath) + " --use_conv_backwards_nonlinearity True --use_FC_backwards_nonlinearity True"
         print(final_call)
-        print(final_call, file=output_file)
+        print(final_call, file=output_file)"""
 
-    condition=dataset+"_use_everything"
-    for s in range(seeds):
-        lpath = log_path + "/"+str(exp_name) +"_"+condition + "/" + str(s)
-        spath = save_path + "/" + str(exp_name) +"_"+condition + "/" + str(s)
-        final_call = base_call + " --logdir " + str(lpath) + " --savedir " + str(spath) + " --use_conv_backwards_nonlinearity True --use_FC_backwards_nonlinearity True --use_FC_backwards_weights True"
-        print(final_call)
-        print(final_call, file=output_file)
-        
+
         
         
     
