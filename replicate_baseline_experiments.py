@@ -10,6 +10,7 @@ seeds = 1
 datasets = ["mnist","fashion"]
 for dataset in datasets:
     bcall = base_call + " --dataset " + str(dataset)
+    condition = dataset
     for s in range(seeds):
         spath = save_path + "/" + str(exp_name) +"_"+condition + "/" + str(s)
         final_call = bcall + " --logdir " + str(lpath) + " --savedir " + str(spath)
