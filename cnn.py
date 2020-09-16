@@ -419,6 +419,17 @@ if __name__ == '__main__':
         trainset,testset = get_cnn_dataset(args.dataset,args.batch_size,args.normalize_data)
     else:
         raise ValueError("Dataset name not supported. Must be in [cifar,cifar100,svhn,mnist]")
+
+    if args.dataset in ["cifar", "mnist","svhn"]:
+        output_size = 10
+    if args.dataset == "cifar100":
+        output_size==100
+
+    def onehot(x):
+        z = torch.zeros([len(x),output_size])
+        for i in range(len(x)):
+            z[i,x[i]] = 1
+        return z.float().to(DEVICE)
     
     l1 = ConvLayer(32,3,6,64,5,args.learning_rate,relu,relu_deriv,args.inference_learning_rate,device=DEVICE)
     l2 = MaxPool(2,device=DEVICE)
