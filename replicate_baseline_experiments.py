@@ -9,9 +9,9 @@ output_file = open(generated_name, "w")
 seeds = 1
 datasets = ["mnist","fashion"]
 for dataset in datasets:
-    base_call = bcall + " --dataset " + str(dataset)
+    bcall = base_call + " --dataset " + str(dataset)
     for s in range(seeds):
         spath = save_path + "/" + str(exp_name) +"_"+condition + "/" + str(s)
-        final_call = base_call + " --logdir " + str(lpath) + " --savedir " + str(spath)
+        final_call = bcall + " --logdir " + str(lpath) + " --savedir " + str(spath)
         print(final_call)
         print(final_call, file=output_file)
