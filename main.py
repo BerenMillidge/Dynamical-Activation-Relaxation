@@ -136,9 +136,20 @@ def accuracy(out, L):
 def boolcheck(x):
     return str(x).lower() in ["true", "1", "yes"]
 
+def parse_act_fn(fn):
+  if fn == "tanh":
+    f = tanh
+    df = tanh_deriv
+  elif fn == "relu":
+    f = relu
+    df = relu_deriv
+  else:
+    raise ValueError("Activation function not recognised. Must be one of: tanh, relu")
+  return f,df
+
 
 class FCLayer(object):
-  def __init__(self, input_size, output_size,batch_size, fn, fn_deriv,inference_lr, weight_lr,device='cpu',numerical_test = False,use_current_x_update=False, use_current_x_weights=False, use_fderiv_x_update=False, use_fderiv_weight_update=False,xnext_fderiv = False):
+  def __init__(self, input_size, output_size,batch_size, fn, fn_deriv,inference_lr, weight_lr,device='cpu',numerical_test = False,use_current_x_update=False, use_current_x_weights=False, use_fderiv_x_update=False, use_fderiv_weight_update=False,xnext_fderiv_x = False, xnext_fderiv_weights = False):
     self.input_size = input_size
     self.output_size = output_size
     self.batch_size = batch_size
@@ -154,7 +165,8 @@ class FCLayer(object):
     self.use_current_x_weights = use_current_x_weights
     self.use_fderiv_x_update = use_fderiv_x_update
     self.use_fderiv_weight_update = use_fderiv_weight_update
-    self.xnext_fderiv = xnext_fderiv
+    self.xnext_fderiv_x = xnext_fderiv_x
+    self.xnext_fderiv_weights = xnext_fderiv_weights
     if self.numerical_test:
       self.weights = nn.Parameter(self.weights)
       self.bias = nn.Parameter(self.bias)
@@ -177,7 +189,7 @@ class FCLayer(object):
     if not self.use_backwards_weights:
       if self.use_backward_nonlinearity:
         if self.use_fderiv_x_update:
-          if self.xnext_fderiv:
+          if self.xnext_fderiv_x:
             xgrad = self.x - ((xnext * self.fn_deriv(xnext)) @ self.weights.T)
           else:
             xgrad = self.x - ((xnext * self.fn_deriv(self.x @ self.weights)) @ self.weights.T)
@@ -188,8 +200,8 @@ class FCLayer(object):
     else:
       if self.use_backward_nonlinearity:
         if self.use_fderiv_x_update:
-          if self.xnext_fderiv:
-            xgrad = self.x - ((xnext * self.fn_deriv(xnest)) @ self.backwards_weights)
+          if self.xnext_fderiv_x:
+            xgrad = self.x - ((xnext * self.fn_deriv(xnext)) @ self.backwards_weights)
           else:
             xgrad = self.x - ((xnext * self.fn_deriv(self.x @ self.weights)) @ self.backwards_weights)
         else:
@@ -202,15 +214,15 @@ class FCLayer(object):
   def update_weights(self,xnext,update_weights= True):
     if self.use_current_x_weights:
       if self.use_fderiv_weight_update:
-        if self.xnext_fderiv:
+        if self.xnext_fderiv_weights:
           wgrad = self.x.T @ (xnext * self.fn_deriv(xnext))
         else:
-          wgrad = self.x.T @ (xnext * self.fn_deriv(self.x @ self.weights.T))
+          wgrad = self.x.T @ (xnext * slf.fn_deriv(self.x @ self.weights.T))
       else:
         wgrad = self.x.T @ (xnext * self.fn_deriv(self.activations))
     else:
       if self.use_fderiv_weight_update:
-        if self.xnext_fderiv:
+        if self.xnext_fderiv_weights:
           wgrad = self.old_x.T @ (xnext * self.fn_deriv(xnext))
         else:
           wgrad = self.old_x.T @ (xnext * self.fn_deriv(self.x @ self.weights))
@@ -232,7 +244,7 @@ class FCLayer(object):
 
 
 class Net(object):
-  def __init__(self, layers, n_inference_steps,use_backwards_weights, update_backwards_weights, use_backward_nonlinearity,device="cpu",dynamical_weight_update=False,use_current_x_update=False,use_current_x_weights=False,use_fderiv_x_update=False,use_fderiv_weight_update=False,xnext_fderiv=False,lr_dilation_factor=-1):
+  def __init__(self, layers, n_inference_steps,use_backwards_weights, update_backwards_weights, use_backward_nonlinearity,device="cpu",dynamical_weight_update=False,use_current_x_update=False,use_current_x_weights=False,use_fderiv_x_update=False,use_fderiv_weight_update=False,xnext_fderiv_x=False,xnext_fderiv_weights=False,lr_dilation_factor=-1):
     self.layers = layers
     self.n_inference_steps = n_inference_steps
     self.use_backwards_weights = use_backwards_weights
@@ -243,7 +255,8 @@ class Net(object):
     self.use_current_x_weights = use_current_x_weights
     self.use_fderiv_x_update = use_fderiv_x_update
     self.use_fderiv_weight_update = use_fderiv_weight_update
-    self.xnext_fderiv = xnext_fderiv
+    self.xnext_fderiv_x = xnext_fderiv_x
+    self.xnext_fderiv_weights = xnext_fderiv_weights
     self.device = device
     self.lr_dilation_factor = lr_dilation_factor
     if self.lr_dilation_factor == -1:
@@ -272,7 +285,8 @@ class Net(object):
       l.use_current_x_weights = self.use_current_x_weights
       l.use_fderiv_x_update = self.use_fderiv_x_update
       l.use_fderiv_weight_update = self.use_fderiv_weight_update
-      l.xnext_fderiv = self.xnext_fderiv
+      l.xnext_fderiv_x = self.xnext_fderiv_x
+      l.xnext_fderiv_weights = self.xnext_fderiv_weights
       if self.use_backwards_weights:
         l.init_backwards_weights()
       if self.dynamical_weight_update:
@@ -467,7 +481,9 @@ if __name__ == '__main__':
     parser.add_argument("--use_current_x_weights",type=boolcheck, default=False)
     parser.add_argument("--use_fderiv_x_update",type=boolcheck, default=False)
     parser.add_argument("--use_fderiv_weight_update",type=boolcheck, default=False)
-    parser.add_argument("--xnext_fderiv",type=boolcheck,default=False)
+    parser.add_argument("--xnext_fderiv_x",type=boolcheck,default=False)
+    parser.add_argument("--xnext_fderiv_weights",type=boolcheck,default=False)
+    parser.add_argument("--act_fn", type=str, default="tanh")
     args = parser.parse_args()
     print("Args parsed")
     #create folders
@@ -476,16 +492,18 @@ if __name__ == '__main__':
     if args.logdir != "":
         subprocess.call(["mkdir","-p",str(args.logdir)])
     print("folders created")
+    # get activation functions
+    f,df = parse_act_fn(args.act_fn)
     trainset,testset = get_dataset(args.batch_size,args.norm_factor,dataset=args.dataset)
     if args.dataset == "mnist" or args.dataset=="fashion":
-      l1 = FCLayer(784,300,args.batch_size,tanh,tanh_deriv,args.inference_learning_rate, args.learning_rate,device=DEVICE)
-      l2 = FCLayer(300,300,args.batch_size,tanh,tanh_deriv,args.inference_learning_rate, args.learning_rate,device=DEVICE)
-      l3 = FCLayer(300,100,args.batch_size,tanh,tanh_deriv,args.inference_learning_rate, args.learning_rate,device=DEVICE)
+      l1 = FCLayer(784,300,args.batch_size,f,df,args.inference_learning_rate, args.learning_rate,device=DEVICE)
+      l2 = FCLayer(300,300,args.batch_size,f,df,args.inference_learning_rate, args.learning_rate,device=DEVICE)
+      l3 = FCLayer(300,100,args.batch_size,f,df,args.inference_learning_rate, args.learning_rate,device=DEVICE)
       l4 = FCLayer(100,10,args.batch_size,linear,linear_deriv,args.inference_learning_rate, args.learning_rate,device=DEVICE)
     elif args.dataset == "svhn":
-      l1 = FCLayer(3072,1000,args.batch_size,tanh,tanh_deri ,args.inference_learning_rate, args.learning_rate,device=DEVICE)
-      l2 = FCLayer(1000,1000,args.batch_size,tanh,tanh_deriv,args.inference_learning_rate, args.learning_rate,device=DEVICE)
-      l3 = FCLayer(1000,300,args.batch_size,tanh,tanh_deriv,args.inference_learning_rate, args.learning_rate,device=DEVICE)
+      l1 = FCLayer(3072,1000,args.batch_size,f,df ,args.inference_learning_rate, args.learning_rate,device=DEVICE)
+      l2 = FCLayer(1000,1000,args.batch_size,f,df,args.inference_learning_rate, args.learning_rate,device=DEVICE)
+      l3 = FCLayer(1000,300,args.batch_size,f,df,args.inference_learning_rate, args.learning_rate,device=DEVICE)
       l4 = FCLayer(300,10,args.batch_size,linear,linear_deriv,args.inference_learning_rate, args.learning_rate,device=DEVICE)
     else:
       raise ValueError("dataset not recognised")
@@ -499,7 +517,8 @@ if __name__ == '__main__':
          use_current_x_weights= args.use_current_x_weights,
          use_fderiv_x_update= args.use_fderiv_x_update,
          use_fderiv_weight_update= args.use_fderiv_weight_update,
-         xnext_fderiv= args.xnext_fderiv,
+         xnext_fderiv_x= args.xnext_fderiv_x,
+         xnext_fderiv_weights= args.xnext_fderiv_weights,
          device=DEVICE)
     elif args.network_type == "bp":
         net = BackpropNet(layers,device=DEVICE)
