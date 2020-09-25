@@ -74,9 +74,4 @@ for dataset in datasets:
         spath = save_path + "/" + str(exp_name) +"_"+condition + "/" + str(s)
         final_call = base_call + " --logdir " + str(lpath) + " --savedir " + str(spath) + " --use_conv_backwards_nonlinearity False --use_FC_backwards_nonlinearity False"
         print(final_call)
-        print(final_call, file=output_file)"""
-
-
-        
-        
-    
+        print(final_call, file=output_file)
