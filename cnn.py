@@ -400,11 +400,11 @@ if __name__ == '__main__':
     parser.add_argument("--n_inference_steps",type=int,default=100)
     parser.add_argument("--inference_learning_rate",type=float,default=0.1)
     parser.add_argument("--dataset",type=str,default="cifar")
-    parser.add_argument("--use_FC_backwards_weights",type=boolcheck, default=True)
+    parser.add_argument("--use_FC_backwards_weights",type=boolcheck, default=False)
     parser.add_argument("--use_FC_backwards_nonlinearity",type=boolcheck, default=True)
     parser.add_argument("--update_backwards_weights",type=boolcheck,default=True)
     parser.add_argument("--use_conv_backwards_weights",type=boolcheck,default=False)
-    parser.add_argument("--use_conv_backwards_nonlinearity",type=boolcheck,default=False)
+    parser.add_argument("--use_conv_backwards_nonlinearity",type=boolcheck,default=True)
     parser.add_argument("--network_type",type=str,default="ar")
 
     args = parser.parse_args()
