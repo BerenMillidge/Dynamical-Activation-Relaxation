@@ -90,21 +90,70 @@ def plot_results(pc_path, backprop_path,title,label1,label2,path3="",label3=""):
 #EPOCH_NUM = 5000
 
 if __name__ == "__main__":
-    basepath = "dynamical_ar_experiments/dynamical__"
+    basepath = "dynamical_ar_experiments/real_proper_"
     standard = "inference_lrs_0.1"
     datasets = ["mnist","fashion"]
+    act_fns = ["tanh", "relu"]
     inference_lrs = [0.1,0.5,0.8]
     inference_steps = [300,500]
-    for dataset in datasets:
+    #for dataset in datasets:
         #for inference_lr in inference_lrs:
          #   default = basepath + str(dataset) + "_" + standard
           #  test = basepath + str(dataset) + "_inference_lrs_" + str(inference_lr)
            # plot_results(test, default,dataset + "_Inference LR","inference_lr_" + str(inference_lr), "default")
 
-        for inference_step in inference_steps:
-            default = basepath + str(dataset) + "_" + standard
-            test = basepath + str(dataset) + "_inference_steps_" + str(inference_step)
-            plot_results(test, default,dataset + "_Inference Steps","inference_steps_" + str(inference_step), "default")
+        #for inference_step in inference_steps:
+          #  default = basepath + str(dataset) + "_" + standard
+         #   test = basepath + str(dataset) + "_inference_steps_" + str(inference_step)
+          #  plot_results(test, default,dataset + "_Inference Steps","inference_steps_" + str(inference_step), "default")
+
+
+    default_mnist = "dynamical_ar_experiments/baseline_mnist"
+    default_fashion = "dynamical_ar_experiments/baseline_fashion"
+    basepath = "dynamical_ar_experiments/prelim_ar_experiments_"
+    for dataset in datasets:
+        bppath = basepath + dataset + "_"
+        if dataset == "mnist":
+            default = default_mnist
+        else:
+            default = default_fashion
+        for act_fn in act_fns:
+            bpath = bppath + act_fn  + "_"
+            current_x_both = bpath + "use_current_x_both" #completely fails
+            current_x_update = bpath + "use_current_x_update" #works perfectly
+            current_x_weights = bpath + "use_current_x_weights" # completely fails
+            fderiv_both = bpath + "use_fderiv_both" # about 0.88, only final layer? # but somehow their combination fails which is weird
+            fderiv_weight_update = bpath + "use_fderiv_weight_update" # works perfectly
+            fderiv_x_update = bpath + "use_fderiv_x_update" # works perfectly # so this is a good results right so this is good. we only need to store the weights for the final thing.
+            xnext_fderiv_both = bpath + "use_xnext_fderiv_both" # about 0.88 -- final layer
+
+            
+            plot_results(current_x_both, default, "Current x both","current_x_both", "default")
+            plot_results(current_x_update, default, "Current x update","current_x_update", "default")
+            plot_results(current_x_weights, default, "Current x weights","current_x_weights", "default")
+            plot_results(fderiv_both, default, "Fderiv both","fderiv_both", "default")
+            plot_results(fderiv_weight_update, default, "Fderiv weight update","fderiv_weight_update", "default")
+            plot_results(fderiv_x_update, default, "Fderiv_x_update","fderiv_x_update", "default")
+            plot_results(xnext_fderiv_both, default, "xnext_fderiv_both","xnext_fderiv_both", "default")
+
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     
     #basepath = "activation_relaxation_experiments/full_run_"

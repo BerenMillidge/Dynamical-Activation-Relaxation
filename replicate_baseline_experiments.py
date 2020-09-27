@@ -12,6 +12,7 @@ for dataset in datasets:
     bcall = base_call + " --dataset " + str(dataset)
     condition = dataset
     for s in range(seeds):
+        lpath = log_path + "/"+str(exp_name) +"_"+condition + "/" + str(s)
         spath = save_path + "/" + str(exp_name) +"_"+condition + "/" + str(s)
         final_call = bcall + " --logdir " + str(lpath) + " --savedir " + str(spath)
         print(final_call)
