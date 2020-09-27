@@ -135,6 +135,21 @@ def accuracy(out, L):
 def boolcheck(x):
     return str(x).lower() in ["true", "1", "yes"]
 
+def parse_act_fn(fn):
+  if fn == "tanh":
+    f = tanh
+    df = tanh_deriv
+  elif fn == "relu":
+    f = relu
+    df = relu_deriv
+  elif fn == "sigmoid":
+    f = sigmoid 
+    df = sigmoid_deriv
+  else:
+    raise ValueError("Activation function not recognised. Must be one of: tanh, relu")
+  return f,df
+
+
 class ARNet(object):
   def __init__(self, layers, n_inference_steps_train, inference_learning_rate, weight_learning_rate,continual_weight_update=False,update_dilation_factor=None,numerical_check=False,device='cpu',use_FC_backwards_weights=False,use_FC_backwards_nonlinearity=False,update_backwards_weights = True, use_conv_backwards_weights = False, use_conv_backwards_nonlinearity = False):
     self.layers= layers
@@ -406,6 +421,7 @@ if __name__ == '__main__':
     parser.add_argument("--use_conv_backwards_weights",type=boolcheck,default=False)
     parser.add_argument("--use_conv_backwards_nonlinearity",type=boolcheck,default=True)
     parser.add_argument("--network_type",type=str,default="ar")
+    parser.add_argument("--act_fn",type=str,default="tanh")
 
     args = parser.parse_args()
     print("Args parsed")
@@ -425,17 +441,19 @@ if __name__ == '__main__':
     if args.dataset == "cifar100":
         output_size =100
 
+    f,df = parse_act_fn(args.act_fn)
+
     def onehot(x):
         z = torch.zeros([len(x),output_size])
         for i in range(len(x)):
             z[i,x[i]] = 1
         return z.float().to(DEVICE)
     
-    l1 = ConvLayer(32,3,6,64,5,args.learning_rate,relu,relu_deriv,args.inference_learning_rate,device=DEVICE)
+    l1 = ConvLayer(32,3,6,64,5,args.learning_rate,f,df,args.inference_learning_rate,device=DEVICE)
     l2 = MaxPool(2,device=DEVICE)
-    l3 = ConvLayer(14,6,16,64,5,args.learning_rate,relu,relu_deriv,args.inference_learning_rate,device=DEVICE)
-    l4 = ProjectionLayer((64,16,10,10),120,relu,relu_deriv,args.learning_rate,args.inference_learning_rate,device=DEVICE)
-    l5 = FCLayer(120,120,64,args.learning_rate,args.inference_learning_rate,relu,relu_deriv,device=DEVICE)
+    l3 = ConvLayer(14,6,16,64,5,args.learning_rate,f,df,args.inference_learning_rate,device=DEVICE)
+    l4 = ProjectionLayer((64,16,10,10),120,f,df,args.learning_rate,args.inference_learning_rate,device=DEVICE)
+    l5 = FCLayer(120,120,64,args.learning_rate,args.inference_learning_rate,f,df,device=DEVICE)
     l6 = FCLayer(120,output_size,64,args.learning_rate,args.inference_learning_rate,linear,linear_deriv,device=DEVICE)
     layers =[l1,l2,l3,l4,l5,l6]
     net = ARNet(layers,500,0.05,0.001,device=DEVICE)

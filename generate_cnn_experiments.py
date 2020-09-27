@@ -7,9 +7,8 @@ exp_name = str(sys.argv[4])
 bcall = "python cnn.py"
 output_file = open(generated_name, "w")
 seeds = 1
-#datasets = ["cifar","cifar100","svhn"]
-datasets = ["cifar100"]
-act_fns = ["tanh","relu"]
+datasets = ["cifar","cifar100","svhn"]
+act_fns = ["tanh","relu","sigmoid"]
 
 for dataset in datasets:
     base_call = bcall + " --dataset " + str(dataset)
