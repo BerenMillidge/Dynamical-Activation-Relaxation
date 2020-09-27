@@ -11,11 +11,11 @@ datasets = ["cifar","cifar100","svhn"]
 act_fns = ["tanh","relu","sigmoid"]
 
 for dataset in datasets:
-    base_call = bcall + " --dataset " + str(dataset)
+    bbcall = bcall + " --dataset " + str(dataset)
     cond = dataset + "_"
 
     for act_fn in act_fns:
-        base_call += " --act_fn " + str(act_fn)
+        base_call = bbcall + " --act_fn " + str(act_fn)
         condition= cond + act_fn+"_default"
         for s in range(seeds):
             lpath = log_path + "/"+str(exp_name) +"_"+condition + "/" + str(s)
