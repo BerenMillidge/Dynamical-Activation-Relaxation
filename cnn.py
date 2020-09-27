@@ -423,7 +423,7 @@ if __name__ == '__main__':
     if args.dataset in ["cifar", "mnist","svhn"]:
         output_size = 10
     if args.dataset == "cifar100":
-        output_size==100
+        output_size =100
 
     def onehot(x):
         z = torch.zeros([len(x),output_size])
