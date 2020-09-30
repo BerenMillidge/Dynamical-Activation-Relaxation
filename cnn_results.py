@@ -86,38 +86,25 @@ def plot_results(pc_path, backprop_path,title,label1,label2,path3="",label3=""):
 
 
 if __name__ == "__main__":
-    basepath = "dynamical_ar_experiments/cnn__"
-    cifar_use_all_nonlinearity = basepath + "cifar_use_all_nonlinearity"
-    cifar_conv_backwards_nonlinearity = basepath + "cifar_use_conv_backwards_nonlinearity"
-    cifar_conv_backwards_weights = basepath + "cifar_use_conv_backwards_weights"
-    cifar_FC_backwards_nonlinearity = basepath + "cifar_use_FC_backwards_nonlinearity"
-    cifar_FC_backwards_weights = basepath + "cifar_use_FC_backwards_weights"
-    cifar_FC_both = basepath + "cifaruse_FC_both"
-    cifar_default = basepath + "cifar_default"
-    svhn_use_all_nonlinearity = basepath + "svhn_use_all_nonlinearity"
-    svhn_conv_backwards_nonlinearity = basepath + "svhn_use_conv_backwards_nonlinearity"
-    svhn_conv_backwards_weights = basepath + "svhn_use_conv_backwards_weights"
-    svhn_FC_backwards_nonlinearity = basepath + "svhn_use_FC_backwards_nonlinearity"
-    svhn_FC_backwards_weights = basepath + "svhn_use_FC_backwards_weights"
-    svhn_FC_both = basepath + "svhnuse_FC_both"
-    svhn_default = basepath + "svhn_default"
+    act_fns = ["tanh","relu","sigmoid"]
+    datasets = ["cifar","cifar100","svhn"]
+    bpath = "dynamical_ar_experiments/proper_cnn__"
+    for dataset in datasets:
+        for act_fn in act_fns:
+            basepath = bpath + dataset + "_" + act_fn + "_"
+            use_all_nonlinearity = basepath + "use_all_nonlinearity"
+            conv_backwards_nonlinearity = basepath + "use_conv_backwards_nonlinearity"
+            conv_backwards_weights = basepath + "use_conv_backwards_weights"
+            FC_backwards_nonlinearity = basepath + "use_FC_backwards_nonlinearity"
+            FC_backwards_weights = basepath + "use_FC_backwards_weights"
+            FC_both = basepath + "use_FC_both"
+            default = basepath + "default"
 
-    plot_results(cifar_conv_backwards_weights, cifar_default, "Cifar Backwards Weights", "Conv backwards weights", "Baseline Conv")
-    plot_results(cifar_conv_backwards_nonlinearity, cifar_default, "Cifar Backwards Nonlinearity", "Conv nonlinear", "Baseline Conv")
-    plot_results(cifar_FC_backwards_nonlinearity, cifar_default, "Cifar FC Backwards Nonlinearity", "FC nonlinear", "Baseline Conv")
-    plot_results(cifar_FC_backwards_weights, cifar_default, "cifar FC backwards weights", "FC weights", "Baseline Conv")
-    plot_results(cifar_FC_both, cifar_default, "Cifar FC both", "FC both", "Baseline Conv")
-    plot_results(cifar_use_all_nonlinearity, cifar_default, "Cifar FC use all nonlinearity", "Both nonlinear", "Baseline Conv")
 
-    plot_results(svhn_conv_backwards_weights, svhn_default, "svhn backwards weights", "Conv nonlinear", "Baseline Conv")
-    plot_results(svhn_conv_backwards_nonlinearity, svhn_default, "svhn conv backwards nonlinearity", "Conv nonlinear", "Baseline Conv")
-    plot_results(svhn_FC_backwards_nonlinearity, svhn_default, "svhn fc backwards nonlinearity", "FC nonlinear", "Baseline Conv")
-    plot_results(svhn_FC_backwards_weights, svhn_default, "svhn FC backwards weights", "FC weights", "Baseline Conv")
-    plot_results(svhn_FC_both, svhn_default, "svhn fc both", "FC both", "Baseline Conv")
-    plot_results(svhn_use_all_nonlinearity, svhn_default, "svhn use all nonlinearity", "Both nonlinear", "Baseline Conv")
+            plot_results(conv_backwards_weights, default, dataset + "_" + act_fn + "_"+"Backwards Weights", "Conv backwards weights", "Baseline Conv")
+            plot_results(conv_backwards_nonlinearity, default,  dataset + "_" + act_fn + "_" + "Backwards Nonlinearity", "Conv nonlinear", "Baseline Conv")
+            plot_results(FC_backwards_nonlinearity, default, dataset + "_" + act_fn + "_" + "FC Backwards Nonlinearity", "FC nonlinear", "Baseline Conv")
+            plot_results(FC_backwards_weights, default, dataset + "_" + act_fn + "_" + "FC backwards weights", "FC weights", "Baseline Conv")
+            plot_results(FC_both, default, dataset + "_" + act_fn + "_" + "FC both", "FC both", "Baseline Conv")
+            plot_results(use_all_nonlinearity, default, dataset + "_" + act_fn + "_" + "FC use all nonlinearity", "Both nonlinear", "Baseline Conv")
 
-    #plot_results(cifar_conv_backwards_nonlinearity, cifar_FC_backwards_nonlinearity, "Conv vs FC", "Conv nonlinear", "FC nonlinear")
-    #plot_results(cifar_FC_backwards_nonlinearity, cifar_FC_both, "both", "FC", "both")
-
-    #plot_results(svhn_conv_backwards_nonlinearity, svhn_FC_backwards_nonlinearity, "Conv vs FC", "Conv nonlinear", "FC nonlinear")
-    #plot_results(svhn_FC_backwards_nonlinearity, svhn_FC_both, "both", "FC", "both")
