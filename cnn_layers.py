@@ -67,7 +67,7 @@ class ConvLayer(object):
     dW = self.dW.reshape((self.num_filters,self.num_channels,self.kernel_size,self.kernel_size))
     if update_weights:
       self.weights -= self.learning_rate * torch.clamp(dW * 2,-50,50)
-    if self.use_conv_backwards weights and self.update_backwards_weights:
+    if self.use_conv_backwards_weights and self.update_backwards_weights:
       self.backwards_weights -= self.learning_rate * torch.clamp(dW.T *2, -50,50)
     if self.numerical_test:
       print("conv weight grad: ", (dW)[0:10,0])
