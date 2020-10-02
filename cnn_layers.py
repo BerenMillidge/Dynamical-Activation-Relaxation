@@ -42,8 +42,7 @@ class ConvLayer(object):
     self.weights = self.weights.detach()
 
   def init_backwards_weights(self):
-    pass
-    #TODO backwards weights for CNN
+    self.backwards_weights = torch.empty(self.weights.reshape(self.num_filters,-1).T.shape).normal_(mean=0,std=0.05).to(self.device)
 
   def forward(self,inp):
     self.x = inp.clone()
