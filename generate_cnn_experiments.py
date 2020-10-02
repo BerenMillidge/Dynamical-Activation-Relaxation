@@ -16,6 +16,7 @@ for dataset in datasets:
 
     for act_fn in act_fns:
         base_call = bbcall + " --act_fn " + str(act_fn)
+        """
         condition= cond + act_fn+"_default"
         for s in range(seeds):
             lpath = log_path + "/"+str(exp_name) +"_"+condition + "/" + str(s)
@@ -47,6 +48,7 @@ for dataset in datasets:
             final_call = base_call + " --logdir " + str(lpath) + " --savedir " + str(spath) + " --use_FC_backwards_nonlinearity False"
             print(final_call)
             print(final_call, file=output_file)
+        """
             
         condition= cond + act_fn+"_use_conv_backwards_weights"
         for s in range(seeds):
@@ -55,6 +57,7 @@ for dataset in datasets:
             final_call = base_call + " --logdir " + str(lpath) + " --savedir " + str(spath) + " --use_conv_backwards_weights True"
             print(final_call)
             print(final_call, file=output_file)
+        """
         
         condition= cond + act_fn+"_use_conv_backwards_nonlinearity"
         for s in range(seeds):
@@ -79,3 +82,4 @@ for dataset in datasets:
             final_call = base_call + " --logdir " + str(lpath) + " --savedir " + str(spath) + " --use_conv_backwards_nonlinearity False --use_FC_backwards_nonlinearity False"
             print(final_call)
             print(final_call, file=output_file)
+        """
