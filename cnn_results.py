@@ -80,13 +80,15 @@ def plot_results(pc_path, backprop_path,title,label1,label2,path3="",label3=""):
         frame.set_facecolor("1.0")
         frame.set_edgecolor("1.0")
         fig.tight_layout()
-        #fig.savefig("./figures/"+title +"_"+titles[i]+"_prelim_2.jpg")
-        plt.show()
+        if titles[i] == 'test accuracies':
+            fig.savefig("./figures/"+underscore(title) +"_"+titles[i]+"_prelim_1.jpg")
+            plt.show()
 
-
+def underscore(s):
+    return s.replace(" ", "_")
 
 if __name__ == "__main__":
-    act_fns = ["tanh","relu","sigmoid"]
+    act_fns = ["tanh","relu"]
     datasets = ["cifar","cifar100","svhn"]
     bpath = "dynamical_ar_experiments/proper_cnn__"
     for dataset in datasets:
@@ -101,8 +103,8 @@ if __name__ == "__main__":
             default = basepath + "default"
 
 
-            plot_results(conv_backwards_weights, default, dataset + "_" + act_fn + "_"+"Backwards Weights", "Conv backwards weights", "Baseline Conv")
-            plot_results(conv_backwards_nonlinearity, default,  dataset + "_" + act_fn + "_" + "Backwards Nonlinearity", "Conv nonlinear", "Baseline Conv")
+            plot_results(conv_backwards_weights, default, dataset + "_" + act_fn + "_"+"Conv Backwards Weights", "Conv backwards weights", "Baseline Conv")
+            plot_results(conv_backwards_nonlinearity, default,  dataset + "_" + act_fn + "_" + "Conv Backwards Nonlinearity", "Conv nonlinear", "Baseline Conv")
             plot_results(FC_backwards_nonlinearity, default, dataset + "_" + act_fn + "_" + "FC Backwards Nonlinearity", "FC nonlinear", "Baseline Conv")
             plot_results(FC_backwards_weights, default, dataset + "_" + act_fn + "_" + "FC backwards weights", "FC weights", "Baseline Conv")
             plot_results(FC_both, default, dataset + "_" + act_fn + "_" + "FC both", "FC both", "Baseline Conv")
