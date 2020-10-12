@@ -42,58 +42,58 @@ def plot_results(pc_path, backprop_path,title,label1,label2,path3="",label3=""):
     print(backprop_losslist.shape)
     print(backprop_test_acclist.shape)
     for i,(pc, backprop) in enumerate(zip(pc_list, backprop_list)):
-        xs = np.arange(0,len(pc[0,:]))
-        mean_pc = np.mean(pc, axis=0)
-        std_pc = np.std(pc,axis=0)
-        mean_backprop = np.mean(backprop,axis=0)
-        std_backprop = np.std(backprop,axis=0)
-        print("mean_pc: ",mean_pc.shape)
-        print("std_pc: ", std_pc.shape)
-        fig,ax = plt.subplots(1,1)
-        ax.fill_between(xs, mean_pc - std_pc, mean_pc+ std_pc, alpha=0.5,color='#228B22')
-        plt.plot(mean_pc,label=label1,color='#228B22')
-        ax.fill_between(xs, mean_backprop - std_backprop, mean_backprop+ std_backprop, alpha=0.5,color='#B22222')
-        plt.plot(mean_backprop,label=label2,color='#B22222')
-        if path3 != "":
-            p3 = p3_list[i]
-            mean_p3 = np.mean(p3, axis=0)
-            std_p3 = np.std(p3,axis=0)
-            ax.fill_between(xs, mean_p3 - std_p3, mean_p3+ std_p3, alpha=0.5,color='#228B22')
-            plt.plot(mean_p3,label=label3)
+        if titles[i] == "test accuracies":
+            xs = np.arange(0,len(pc[0,:]))
+            mean_pc = np.mean(pc, axis=0)
+            std_pc = np.std(pc,axis=0)
+            mean_backprop = np.mean(backprop,axis=0)
+            std_backprop = np.std(backprop,axis=0)
+            print("mean_pc: ",mean_pc.shape)
+            print("std_pc: ", std_pc.shape)
+            fig,ax = plt.subplots(1,1)
+            ax.fill_between(xs, mean_pc - std_pc, mean_pc+ std_pc, alpha=0.5,color='#228B22')
+            plt.plot(mean_pc,label=label1,color='#228B22')
+            ax.fill_between(xs, mean_backprop - std_backprop, mean_backprop+ std_backprop, alpha=0.5,color='#B22222')
+            plt.plot(mean_backprop,label=label2,color='#B22222')
+            if path3 != "":
+                p3 = p3_list[i]
+                mean_p3 = np.mean(p3, axis=0)
+                std_p3 = np.std(p3,axis=0)
+                ax.fill_between(xs, mean_p3 - std_p3, mean_p3+ std_p3, alpha=0.5,color='#228B22')
+                plt.plot(mean_p3,label=label3)
 
 
-        ax.spines['top'].set_visible(False)
-        ax.spines['right'].set_visible(False)
-        plt.title(title + " " + str(titles[i]),fontsize=18)
-        ax.tick_params(axis='both',which='major',labelsize=12)
-        ax.tick_params(axis='both',which='minor',labelsize=10)
-        if titles[i] in ["accuracies", "test accuracies"]:
-            plt.ylabel("Accuracy",fontsize=16)
-        else:
-            plt.ylabel("Loss")
-        plt.xlabel("Iterations",fontsize=16)
-        legend = plt.legend()
-        legend.fontsize=14
-        legend.style="oblique"
-        frame  = legend.get_frame()
-        frame.set_facecolor("1.0")
-        frame.set_edgecolor("1.0")
-        fig.tight_layout()
-        #fig.savefig("./figures/"+title +"_"+titles[i]+"_prelim_2.jpg")
-        plt.show()
+            ax.spines['top'].set_visible(False)
+            ax.spines['right'].set_visible(False)
+            plt.title(de_underscore(title) + " " + de_underscore(str(titles[i])),fontsize=18)
+            ax.tick_params(axis='both',which='major',labelsize=12)
+            ax.tick_params(axis='both',which='minor',labelsize=12)
+            if titles[i] in ["accuracies", "test accuracies"]:
+                plt.ylabel("Accuracy",fontsize=18)
+            else:
+                plt.ylabel("Loss")
+            plt.xlabel("Iterations",fontsize=18)
+            legend = plt.legend(prop={"size":14})
+            legend.fontsize=18
+            legend.style="oblique"
+            frame  = legend.get_frame()
+            frame.set_facecolor("1.0")
+            frame.set_edgecolor("1.0")
+            fig.tight_layout()
+            fig.savefig("./figures/"+underscore(title) +"_"+underscore(titles[i])+"_prelim_2.jpg")
+            plt.show()
 
+def underscore(s):
+    return s.replace(" ", "_")
 
-#print("loading...")
-#pc_path = sys.argv[1]
-#backprop_path = sys.argv[2]
-#title = str(sys.argv[3])
-#EPOCH_NUM = 5000
+def de_underscore(s):
+    return s.replace("_", " ")
 
 if __name__ == "__main__":
-    basepath = "dynamical_ar_experiments/real_proper_"
+    basepath = "dynamical_ar_experiments/dynamical_"
     standard = "inference_lrs_0.1"
     datasets = ["mnist","fashion"]
-    act_fns = ["tanh", "relu"]
+    act_fns = ["tanh"]#, "relu"]
     inference_lrs = [0.1,0.5,0.8]
     inference_steps = [300,500]
     #for dataset in datasets:
@@ -110,7 +110,7 @@ if __name__ == "__main__":
 
     default_mnist = "dynamical_ar_experiments/baseline_mnist"
     default_fashion = "dynamical_ar_experiments/baseline_fashion"
-    basepath = "dynamical_ar_experiments/prelim_ar_experiments_"
+    basepath = "dynamical_ar_experiments/real_proper__"
     for dataset in datasets:
         bppath = basepath + dataset + "_"
         if dataset == "mnist":
@@ -119,25 +119,25 @@ if __name__ == "__main__":
             default = default_fashion
         for act_fn in act_fns:
             bpath = bppath + act_fn  + "_"
-            current_x_both = bpath + "use_current_x_both" #completely fails
-            current_x_update = bpath + "use_current_x_update" #works perfectly
-            current_x_weights = bpath + "use_current_x_weights" # completely fails
-            fderiv_both = bpath + "use_fderiv_both" # about 0.88, only final layer? # but somehow their combination fails which is weird
-            fderiv_weight_update = bpath + "use_fderiv_weight_update" # works perfectly
-            fderiv_x_update = bpath + "use_fderiv_x_update" # works perfectly # so this is a good results right so this is good. we only need to store the weights for the final thing.
-            xnext_fderiv_both = bpath + "use_xnext_fderiv_both" # about 0.88 -- final layer
-
+            current_x_weights = bpath + "use_current_x_weights"
+            fderiv_both = bpath + "use_fderiv_both"
+            fderiv_weight_update = bpath + "use_fderiv_weight_update"
+            fderiv_x_update = bpath + "use_fderiv_x_update"
+            xnext_fderiv_both = bpath + "use_xnext_fderiv_both"
+            xnext_fderiv_weights = bpath + "use_xnext_fderiv_weights" 
+            xnext_fderiv_x = bpath + "use_xnext_fderiv_x" 
+            print(bpath)
+            ppath = dataset + "_" + act_fn + "_"
             
-            plot_results(current_x_both, default, "Current x both","current_x_both", "default")
-            plot_results(current_x_update, default, "Current x update","current_x_update", "default")
-            plot_results(current_x_weights, default, "Current x weights","current_x_weights", "default")
-            plot_results(fderiv_both, default, "Fderiv both","fderiv_both", "default")
-            plot_results(fderiv_weight_update, default, "Fderiv weight update","fderiv_weight_update", "default")
-            plot_results(fderiv_x_update, default, "Fderiv_x_update","fderiv_x_update", "default")
-            plot_results(xnext_fderiv_both, default, "xnext_fderiv_both","xnext_fderiv_both", "default")
+            plot_results(current_x_weights, default, ppath + "Current x weights","current_x_weights", "default")
+            plot_results(fderiv_both, default, ppath + "Fderiv both","fderiv_both", "default")
+            plot_results(fderiv_weight_update, default, ppath + "Fderiv weight update","fderiv_weight_update", "default")
+            plot_results(fderiv_x_update, default, ppath + "Fderiv_x_update","fderiv_x_update", "default")
+            #plot_results(xnext_fderiv_both, default, ppath + "xnext_fderiv_both","xnext_fderiv_both", "default")
+            #plot_results(xnext_fderiv_weights, default, ppath + "xnext_fderiv_weights","xnext_fderiv_weights", "default")
+            #plot_results(xnext_fderiv_x, default, ppath + "xnext_fderiv_x","xnext_fderiv_x", "default")
 
 
-        
 
 
 

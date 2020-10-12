@@ -65,27 +65,30 @@ def plot_results(pc_path, backprop_path,title,label1,label2,path3="",label3=""):
 
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
-        plt.title(title + " " + str(titles[i]),fontsize=18)
+        plt.title(de_underscore(title) + " " + de_underscore(str(titles[i])),fontsize=18)
         ax.tick_params(axis='both',which='major',labelsize=12)
-        ax.tick_params(axis='both',which='minor',labelsize=10)
+        ax.tick_params(axis='both',which='minor',labelsize=12)
         if titles[i] in ["accuracies", "test accuracies"]:
-            plt.ylabel("Accuracy",fontsize=16)
+            plt.ylabel("Accuracy",fontsize=18)
         else:
             plt.ylabel("Loss")
-        plt.xlabel("Iterations",fontsize=16)
-        legend = plt.legend()
-        legend.fontsize=14
+        plt.xlabel("Iterations",fontsize=18)
+        legend = plt.legend(prop={"size":14})
+        legend.fontsize=18
         legend.style="oblique"
         frame  = legend.get_frame()
         frame.set_facecolor("1.0")
         frame.set_edgecolor("1.0")
         fig.tight_layout()
         if titles[i] == 'test accuracies':
-            fig.savefig("./figures/"+underscore(title) +"_"+titles[i]+"_prelim_1.jpg")
+            fig.savefig("./figures/"+underscore(title) +"_"+underscore(titles[i])+"_prelim_1.jpg")
             plt.show()
 
 def underscore(s):
     return s.replace(" ", "_")
+
+def de_underscore(s):
+    return s.replace("_", " ")
 
 if __name__ == "__main__":
     act_fns = ["tanh","relu"]
@@ -101,7 +104,6 @@ if __name__ == "__main__":
             FC_backwards_weights = basepath + "use_FC_backwards_weights"
             FC_both = basepath + "use_FC_both"
             default = basepath + "default"
-
 
             plot_results(conv_backwards_weights, default, dataset + "_" + act_fn + "_"+"Conv Backwards Weights", "Conv backwards weights", "Baseline Conv")
             plot_results(conv_backwards_nonlinearity, default,  dataset + "_" + act_fn + "_" + "Conv Backwards Nonlinearity", "Conv nonlinear", "Baseline Conv")
