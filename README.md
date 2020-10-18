@@ -10,3 +10,16 @@ The code is written in [Python 3.x] and uses the following packages:
 * [NumPY]
 * [PyTorch] version 1.3.1
 * [matplotlib] for plotting figures
+
+## Citation
+
+If you enjoyed the paper or found the code useful, please cite as: 
+
+```
+@article{millidge2020activation,
+  title={Activation Relaxation: A Local Dynamical Approximation to Backpropagation in the Brain},
+  author={Millidge, Beren and Tschantz, Alexander and Buckley, Christopher L and Seth, Anil},
+  journal={arXiv preprint arXiv:2009.05359},
+  year={2020}
+}
+```
